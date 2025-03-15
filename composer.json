@@ -1,0 +1,29 @@
+{
+    "name": "baldcat/orchid-webp",
+    "description": "Composer package for converting Orchid Attachment to webp.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Baldcat\\OrchidWebp\\": "src",
+            "Baldcat\\OrchidWebp\\Service\\": "src/Services"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Baldcat\\OrchidWebp\\OrchidWebpServiceProvider"
+            ]
+        }
+    },
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.0",
+        "orchid/platform": "^14.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.5"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "stable"
+}
