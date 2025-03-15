@@ -6,7 +6,8 @@
     "autoload": {
         "psr-4": {
             "Baldcat\\OrchidWebp\\": "src",
-            "Baldcat\\OrchidWebp\\Service\\": "src/Services"
+            "Baldcat\\OrchidWebp\\Service\\": "src/Services",
+            "Baldcat\\OrchidWebp\\Traits\\": "src/Traits"
         }
     },
     "extra": {

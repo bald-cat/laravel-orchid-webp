@@ -2,8 +2,10 @@
 
 namespace Baldcat\OrchidWebp;
 
+use Baldcat\OrchidWebp\Models\WebpAttachment;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use Orchid\Attachment\Models\Attachment;
 
 class OrchidWebpServiceProvider extends ServiceProvider {
 
@@ -19,4 +21,10 @@ class OrchidWebpServiceProvider extends ServiceProvider {
 
         }
     }
+
+    public function register()
+    {
+        $this->app->bind(Attachment::class, fn() => WebpAttachment::class);
+    }
+
 }
