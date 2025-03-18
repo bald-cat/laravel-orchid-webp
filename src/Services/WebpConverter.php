@@ -20,7 +20,6 @@ class WebpConverter
 
     private Attachment $attachment;
     private $storage;
-    private WebpAttachment $webpAttachment;
     private WebpStorage $webpStorage;
 
     public function __construct(
