@@ -2,15 +2,16 @@
 
 namespace Baldcat\OrchidWebp\Services;
 
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Baldcat\OrchidWebp\Storage\WebpStorage;
+use Baldcat\OrchidWebp\Support\WebpAttachment;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Orchid\Attachment\Models\Attachment;
 use Exception;
+use InvalidArgumentException;
 
 class WebpConverter
 {
-
     private const SUPPORTED_MIME_TYPES = [
         'image/jpeg',
         'image/png',
@@ -18,72 +19,76 @@ class WebpConverter
     ];
 
     private Attachment $attachment;
+    private $storage;
+    private WebpAttachment $webpAttachment;
+    private WebpStorage $webpStorage;
 
-    private Filesystem $storage;
-
-    public function __construct(Attachment $attachment)
-    {
+    public function __construct(
+        Attachment $attachment,
+        WebpStorage $webpStorage,
+    ) {
         $this->attachment = $attachment;
         $this->storage = Storage::disk($this->attachment->disk);
+        $this->webpStorage = $webpStorage;
     }
 
     /**
      * @throws Exception
      */
-    public function url(): string
+    private function validateMimeType(): bool
     {
-        $originalPath = $this->getOriginalImagePath();
-        $webpPath = $this->generateWebpPath($originalPath);
+        return in_array($this->attachment->mime, self::SUPPORTED_MIME_TYPES);
+    }
 
-        if (!file_exists($webpPath)) {
-            $this->convertToWebp($originalPath, $webpPath);
+    /**
+     * @throws Exception
+     */
+    public function convert(): ?bool
+    {
+        if ( ! $this->validateMimeType()) {
+            return null;
         }
 
-        return $this->storage->url($this->generateWebpPath($this->attachment->physicalPath()));
+        $originalPath = $this->getOriginalImagePath();
+
+        $webpPath = $this->generateWebpPath($this->attachment->physicalPath());
+
+        if ( ! $this->webpStorage->exists($webpPath)) {
+            $webpContent = $this->convertToWebp($originalPath);
+            return $this->webpStorage->save($webpPath, $webpContent);
+        }
+
+        return null;
     }
 
-    /**
-     * @throws Exception
-     */
-    private function convertToWebp(string $originalPath, string $webpPath): void
+    private function convertToWebp(string $originalPath): string
     {
         $image = $this->createImageFromPath($originalPath);
-        $this->saveImageAsWebp($image, $webpPath);
+        ob_start();
+        imagewebp($image, null, config('orchid-webp.quality', 80));
+        $webpContent = ob_get_clean();
         imagedestroy($image);
+
+        return $webpContent;
     }
 
     private function getOriginalImagePath(): string
     {
-        return $this->storage
-            ->path($this->attachment->physicalPath());
+        return $this->storage->path($this->attachment->physicalPath());
     }
-    
+
     private function generateWebpPath(string $originalPath): string
     {
-        return Str::beforeLast($originalPath, '.') . '.webp';
+        return Str::beforeLast($originalPath, '.').'.webp';
     }
 
-    /**
-     * @throws Exception
-     */
     private function createImageFromPath(string $path)
     {
-        if (!in_array($this->attachment->mime, self::SUPPORTED_MIME_TYPES)) {
-            throw new Exception('Unsupported image type: ' . $this->attachment->mime);
-        }
-
-        switch ($this->attachment->mime) {
-            case 'image/jpeg':
-                return imagecreatefromjpeg($path);
-            case 'image/png':
-                return imagecreatefrompng($path);
-            case 'image/gif':
-                return imagecreatefromgif($path);
-        }
-    }
-
-    private function saveImageAsWebp($image, string $path): void
-    {
-        imagewebp($image, $path, config('orchid-webp.quality'));
+        return match ($this->attachment->mime) {
+            'image/jpeg' => imagecreatefromjpeg($path),
+            'image/png' => imagecreatefrompng($path),
+            'image/gif' => imagecreatefromgif($path),
+            default => throw new InvalidArgumentException('Unsupported image type: '.$this->attachment->mime),
+        };
     }
 }

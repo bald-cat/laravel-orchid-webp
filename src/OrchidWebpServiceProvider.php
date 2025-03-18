@@ -2,10 +2,10 @@
 
 namespace Baldcat\OrchidWebp;
 
-use Baldcat\OrchidWebp\Models\WebpAttachment;
-use Illuminate\Support\Facades\Storage;
+use Baldcat\OrchidWebp\Storage\CacheWebpStorage;
+use Baldcat\OrchidWebp\Storage\FilesystemWebpStorage;
+use Baldcat\OrchidWebp\Storage\WebpStorage;
 use Illuminate\Support\ServiceProvider;
-use Orchid\Attachment\Models\Attachment;
 
 class OrchidWebpServiceProvider extends ServiceProvider {
 
@@ -24,7 +24,14 @@ class OrchidWebpServiceProvider extends ServiceProvider {
 
     public function register()
     {
-        $this->app->bind(Attachment::class, fn() => WebpAttachment::class);
+        $this->app->bind(WebpStorage::class, function () {
+            return match (config('orchid-webp.storage')) {
+                'cache' => new CacheWebpStorage(),
+                'filesystem' => new FilesystemWebpStorage(),
+                default => throw new \InvalidArgumentException('Invalid WEBP_STORAGE value in .env'),
+            };
+        });
+
     }
 
 }

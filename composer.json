@@ -7,7 +7,8 @@
         "psr-4": {
             "Baldcat\\OrchidWebp\\": "src",
             "Baldcat\\OrchidWebp\\Service\\": "src/Services",
-            "Baldcat\\OrchidWebp\\Traits\\": "src/Traits"
+            "Baldcat\\OrchidWebp\\Traits\\": "src/Traits",
+            "Baldcat\\OrchidWebp\\Storage\\": "src/Storage"
         }
     },
     "extra": {
@@ -20,7 +21,8 @@
     "version": "1.0.0",
     "require": {
         "php": "^8.0",
-        "orchid/platform": "^14.0"
+        "orchid/platform": "^14.0",
+      "ext-gd": "*"
     },
     "require-dev": {
         "orchestra/testbench": "^9.5"
