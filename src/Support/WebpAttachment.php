@@ -44,7 +44,7 @@ class WebpAttachment
 
     private function physicalPath(): ?string
     {
-        return $this->path.$this->name.".".$this->extension;
+        return $this->path . $this->name . "." . $this->extension;
     }
 
 

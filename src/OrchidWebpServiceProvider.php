@@ -7,16 +7,16 @@ use Baldcat\OrchidWebp\Storage\FilesystemWebpStorage;
 use Baldcat\OrchidWebp\Storage\WebpStorage;
 use Illuminate\Support\ServiceProvider;
 
-class OrchidWebpServiceProvider extends ServiceProvider {
-
+class OrchidWebpServiceProvider extends ServiceProvider
+{
     public function boot()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/orchid-webp.php', 'orchid-webp');
+        $this->mergeConfigFrom(__DIR__ . '/../config/orchid-webp.php', 'orchid-webp');
 
         if ($this->app->runningInConsole()) {
 
             $this->publishes([
-                __DIR__.'/../config/orchid-webp.php' => config_path('orchid-webp.php'),
+                __DIR__ . '/../config/orchid-webp.php' => config_path('orchid-webp.php'),
             ], 'config');
 
         }

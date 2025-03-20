@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Cache;
 
 class CacheWebpStorage implements WebpStorage
 {
-
     public function save(string $path, string $content): bool
     {
         Cache::put($this->getKey($path), config('orchid-webp.cache.ttl'));

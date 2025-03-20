@@ -3,7 +3,6 @@
 namespace Baldcat\OrchidWebp\Services;
 
 use Baldcat\OrchidWebp\Storage\WebpStorage;
-use Baldcat\OrchidWebp\Support\WebpAttachment;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Orchid\Attachment\Models\Attachment;
@@ -44,7 +43,7 @@ class WebpConverter
      */
     public function convert(): ?bool
     {
-        if ( ! $this->validateMimeType()) {
+        if (! $this->validateMimeType()) {
             return null;
         }
 
@@ -52,7 +51,7 @@ class WebpConverter
 
         $webpPath = $this->generateWebpPath($this->attachment->physicalPath());
 
-        if ( ! $this->webpStorage->exists($webpPath)) {
+        if (! $this->webpStorage->exists($webpPath)) {
             $webpContent = $this->convertToWebp($originalPath);
             return $this->webpStorage->save($webpPath, $webpContent);
         }
@@ -78,7 +77,7 @@ class WebpConverter
 
     private function generateWebpPath(string $originalPath): string
     {
-        return Str::beforeLast($originalPath, '.').'.webp';
+        return Str::beforeLast($originalPath, '.') . '.webp';
     }
 
     private function createImageFromPath(string $path)
@@ -87,7 +86,7 @@ class WebpConverter
             'image/jpeg' => imagecreatefromjpeg($path),
             'image/png' => imagecreatefrompng($path),
             'image/gif' => imagecreatefromgif($path),
-            default => throw new InvalidArgumentException('Unsupported image type: '.$this->attachment->mime),
+            default => throw new InvalidArgumentException('Unsupported image type: ' . $this->attachment->mime),
         };
     }
 }
