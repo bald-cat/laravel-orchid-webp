@@ -25,7 +25,8 @@
       "ext-gd": "*"
     },
     "require-dev": {
-        "orchestra/testbench": "^9.5"
+        "orchestra/testbench": "^9.5",
+        "laravel/pint": "^1.21"
     },
     "prefer-stable": true,
     "minimum-stability": "stable"
