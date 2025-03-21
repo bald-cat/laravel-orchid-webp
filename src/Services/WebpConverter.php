@@ -3,6 +3,7 @@
 namespace Baldcat\OrchidWebp\Services;
 
 use Baldcat\OrchidWebp\Storage\WebpStorage;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Orchid\Attachment\Models\Attachment;
@@ -18,7 +19,7 @@ class WebpConverter
     ];
 
     private Attachment $attachment;
-    private $storage;
+    private Filesystem $storage;
     private WebpStorage $webpStorage;
 
     public function __construct(

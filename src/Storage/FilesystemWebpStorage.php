@@ -2,11 +2,12 @@
 
 namespace Baldcat\OrchidWebp\Storage;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 
 class FilesystemWebpStorage implements WebpStorage
 {
-    private $storage;
+    private Filesystem $storage;
 
     public function __construct($storage = null)
     {
